@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Automation Projects Tracker</title>
+
+<style>
+body {margin:0;font-family:"Segoe UI";background:#f1f5f9;}
+.header {background:#1e3a8a;color:#fff;padding:15px 25px;font-size:18px;}
+
+.container {max-width:1300px;margin:auto;padding:20px;}
+
+.kpi-row {display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-bottom:20px;}
+.kpi {padding:12px;border-radius:8px;color:#fff;}
+.k1{background:#2563eb;} .k2{background:#16a34a;} .k3{background:#d97706;}
+.k4{background:#dc2626;} .k5{background:#7c3aed;} .k6{background:#0891b2;} .k7{background:#64748b;}
+
+.main {display:grid;grid-template-columns:400px 1fr;gap:20px;}
+
+.card {background:#fff;padding:15px;border-radius:8px;border:1px solid #e2e8f0;}
+
+label{font-size:12px;color:#64748b;display:block;margin-top:8px;}
+input,select{width:100%;padding:6px;border:1px solid #cbd5e1;border-radius:6px;}
+
+button{padding:6px 10px;border:none;border-radius:6px;cursor:pointer;margin-top:10px;}
+.btn-blue{background:#2563eb;color:#fff;}
+.btn-red{background:#dc2626;color:#fff;}
+
+.phase{font-size:11px;color:#64748b;margin-top:5px;}
+
+.progress{background:#e2e8f0;height:8px;border-radius:5px;margin-top:4px;}
+.bar{height:100%;border-radius:5px;}
+
+.filter{display:flex;gap:10px;margin-bottom:10px;}
+
+table{width:100%;border-collapse:collapse;}
+th,td{padding:8px;border-bottom:1px solid #e2e8f0;text-align:left;}
+
+.footer{text-align:center;margin-top:10px;font-size:12px;color:#64748b;}
+</style>
+</head>
+
+<body>
+
+<div class="header">Automation Projects Tracker</div>
+
+<div class="container">
+
+<!-- KPI -->
+<div class="kpi-row">
+<div class="kpi k1"><h3 id="total">0</h3>Total</div>
+<div class="kpi k2"><h3 id="completed">0</h3>Completed</div>
+<div class="kpi k3"><h3 id="progressing">0</h3>In Progress</div>
+<div class="kpi k4"><h3 id="notstarted">0</h3>Not Started</div>
+<div class="kpi k5"><h3 id="thismonth">0</h3>This Month</div>
+<div class="kpi k6"><h3 id="nextmonth">0</h3>Next Month</div>
+<div class="kpi k7"><h3 id="prevmonth">0</h3>Previous Month</div>
+</div>
+
+<div class="main">
+
+<!-- LEFT -->
+<div class="card">
+
+<b>Add / Edit Project</b>
+
+<label>Name</label>
+<input id="name">
+
+<label>Go Live</label>
+<input type="date" id="golive">
+
+<label>Version</label>
+<input id="version">
+
+<b style="margin-top:10px;">⚙ Dev Environment</b>
+
+<div class="phase">Planning & Architecture (10%)</div>
+<select id="planning"></select>
+
+<div class="phase">Development & Integration (25%)</div>
+<select id="dev"></select>
+
+<div class="phase">Testing & QA (15%)</div>
+<select id="test"></select>
+
+<b style="margin-top:10px;">🚀 Prod Environment</b>
+
+<div class="phase">Development & Integration (20%)</div>
+<select id="pdev"></select>
+
+<div class="phase">Testing & QA (15%)</div>
+<select id="ptest"></select>
+
+<div class="phase">Configuration & Publish (15%)</div>
+<select id="publish"></select>
+
+<div style="margin-top:10px;">
+<b>Progress:</b> <span id="preview">0%</span>
+<div class="progress"><div id="bar" class="bar"></div></div>
+</div>
+
+<button class="btn-blue" onclick="saveProject()">Save Project</button>
+
+</div>
+
+<!-- RIGHT -->
+<div class="card">
+
+<div class="filter">
+<input id="search" placeholder="Search..." oninput="render()">
+<select id="filter" onchange="render()">
+<option value="all">All</option>
+<option value="completed">Completed</option>
+<option value="progress">In Progress</option>
+<option value="not">Not Started</option>
+</select>
+<button class="btn-blue" onclick="sort()">Sort</button>
+</div>
+
+<table>
+<thead>
+<tr>
+<th>Name</th><th>Status</th><th>Progress</th><th>Go Live</th><th>Version</th><th>Action</th>
+</tr>
+</thead>
+<tbody id="tbody"></tbody>
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="footer">Floreal Bangladesh | Automation Systems</div>
+
+<script>
+
+// dropdown
+["planning","dev","test","pdev","ptest","publish"].forEach(id=>{
+let el=document.getElementById(id);
+["Not Started","In Progress","Completed"].forEach(v=>{
+let o=document.createElement("option");o.text=v;el.add(o);
+});
+});
+
+let projects = JSON.parse(localStorage.getItem("projects")||"[]");
+let editId=null;
+
+function save(){localStorage.setItem("projects",JSON.stringify(projects));}
+
+function val(x){if(x=="Completed")return 1;if(x=="In Progress")return .5;return 0;}
+
+function calc(){
+return Math.round(
+val(planning.value)*10+
+val(dev.value)*25+
+val(test.value)*15+
+val(pdev.value)*20+
+val(ptest.value)*15+
+val(publish.value)*15);
+}
+
+function preview(){
+let p=calc();
+document.getElementById("preview").innerText=p+"%";
+
+let color=p>=80?"#16a34a":p>=40?"#d97706":"#dc2626";
+let bar=document.getElementById("bar");
+bar.style.width=p+"%";
+bar.style.background=color;
+}
+
+["planning","dev","test","pdev","ptest","publish"].forEach(id=>{
+document.getElementById(id).onchange=preview;
+});
+
+function saveProject(){
+
+let name=document.getElementById("name").value.trim();
+if(!name){alert("Enter name");return;}
+
+let obj={
+id:editId||Date.now(),
+name:name,
+golive:golive.value,
+version:version.value,
+planning:planning.value,
+dev:dev.value,
+test:test.value,
+pdev:pdev.value,
+ptest:ptest.value,
+publish:publish.value
+};
+
+if(editId){
+projects=projects.map(x=>x.id==editId?obj:x);
+editId=null;
+}else{
+projects.push(obj);
+}
+
+save();render();
+}
+
+function editProject(id){
+let p=projects.find(x=>x.id==id);
+editId=id;
+
+document.getElementById("name").value=p.name;
+golive.value=p.golive;
+version.value=p.version;
+
+planning.value=p.planning;
+dev.value=p.dev;
+test.value=p.test;
+
+pdev.value=p.pdev;
+ptest.value=p.ptest;
+publish.value=p.publish;
+
+preview();
+}
+
+function del(id){
+if(!confirm("Delete?"))return;
+projects=projects.filter(x=>x.id!=id);
+save();render();
+}
+
+function sort(){
+projects.sort((a,b)=>new Date(a.golive)-new Date(b.golive));
+render();
+}
+
+function calcRow(p){
+return Math.round(
+val(p.planning)*10+val(p.dev)*25+val(p.test)*15+
+val(p.pdev)*20+val(p.ptest)*15+val(p.publish)*15);
+}
+
+function renderKPI(){
+let now=new Date(),tm=0,nm=0,pm=0,c=0,p=0,n=0;
+
+projects.forEach(x=>{
+let prog=calcRow(x);
+let g=new Date(x.golive);
+
+if(prog==100)c++; else if(prog==0)n++; else p++;
+
+if(g.getMonth()==now.getMonth())tm++;
+if(g.getMonth()==now.getMonth()+1)nm++;
+
+let m=now.getMonth()-1,y=now.getFullYear();
+if(m<0){m=11;y--;}
+if(g.getMonth()==m && g.getFullYear()==y)pm++;
+});
+
+total.innerText=projects.length;
+completed.innerText=c;
+progressing.innerText=p;
+notstarted.innerText=n;
+thismonth.innerText=tm;
+nextmonth.innerText=nm;
+prevmonth.innerText=pm;
+}
+
+function render(){
+
+renderKPI();
+
+let s=search.value.toLowerCase();
+let f=filter.value;
+
+let data=projects.filter(x=>{
+let prog=calcRow(x);
+
+if(f=="completed"&&prog!=100)return false;
+if(f=="progress"&&!(prog>0&&prog<100))return false;
+if(f=="not"&&prog!=0)return false;
+
+if(!x.name.toLowerCase().includes(s))return false;
+
+return true;
+});
+
+tbody.innerHTML=data.map(x=>{
+let prog=calcRow(x);
+let color=prog>=80?"#16a34a":prog>=40?"#d97706":"#dc2626";
+
+return `
+<tr>
+<td>${x.name}</td>
+<td>${prog==100?"Completed":prog==0?"Not Started":"In Progress"}</td>
+<td>${prog}%<div class="progress"><div class="bar" style="width:${prog}%;background:${color}"></div></div></td>
+<td>${x.golive||"-"}</td>
+<td>${x.version||"-"}</td>
+<td>
+<button class="btn-blue" onclick="editProject(${x.id})">Edit</button>
+<button class="btn-red" onclick="del(${x.id})">Delete</button>
+</td>
+</tr>`;
+}).join("");
+}
+
+preview();
+render();
+
+</script>
+
+</body>
+</html>
