@@ -1,313 +1,717 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Automation Projects Tracker</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Automation Projects Tracker</title>
+  <style>
+    :root{
+      --bg:#f3f6fb;
+      --card:#ffffff;
+      --border:#e2e8f0;
+      --text:#1e293b;
+      --muted:#64748b;
+      --blue:#2563eb;
+      --green:#16a34a;
+      --amber:#d97706;
+      --red:#dc2626;
+      --violet:#7c3aed;
+      --cyan:#0891b2;
+      --slate:#64748b;
+    }
 
-<style>
-body {margin:0;font-family:"Segoe UI";background:#f1f5f9;}
-.header {background:#1e3a8a;color:#fff;padding:15px 25px;font-size:18px;}
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:"Segoe UI", Arial, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
 
-.container {max-width:1300px;margin:auto;padding:20px;}
+    .header{
+      background:#1e3a8a;
+      color:#fff;
+      padding:16px 24px;
+      font-size:18px;
+      font-weight:600;
+    }
 
-.kpi-row {display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-bottom:20px;}
-.kpi {padding:12px;border-radius:8px;color:#fff;}
-.k1{background:#2563eb;} .k2{background:#16a34a;} .k3{background:#d97706;}
-.k4{background:#dc2626;} .k5{background:#7c3aed;} .k6{background:#0891b2;} .k7{background:#64748b;}
+    .container{
+      max-width:1320px;
+      margin:auto;
+      padding:20px;
+    }
 
-.main {display:grid;grid-template-columns:400px 1fr;gap:20px;}
+    .kpi-row{
+      display:grid;
+      grid-template-columns:repeat(7,1fr);
+      gap:10px;
+      margin-bottom:20px;
+    }
 
-.card {background:#fff;padding:15px;border-radius:8px;border:1px solid #e2e8f0;}
+    .kpi{
+      padding:14px;
+      border-radius:10px;
+      color:#fff;
+      box-shadow:0 4px 14px rgba(0,0,0,.06);
+    }
 
-label{font-size:12px;color:#64748b;display:block;margin-top:8px;}
-input,select{width:100%;padding:6px;border:1px solid #cbd5e1;border-radius:6px;}
+    .kpi h3{
+      margin:0 0 6px 0;
+      font-size:22px;
+      line-height:1;
+    }
 
-button{padding:6px 10px;border:none;border-radius:6px;cursor:pointer;margin-top:10px;}
-.btn-blue{background:#2563eb;color:#fff;}
-.btn-red{background:#dc2626;color:#fff;}
+    .kpi p{
+      margin:0;
+      font-size:12px;
+      opacity:.95;
+    }
 
-.phase{font-size:11px;color:#64748b;margin-top:5px;}
+    .k1{background:var(--blue)}
+    .k2{background:var(--green)}
+    .k3{background:var(--amber)}
+    .k4{background:var(--red)}
+    .k5{background:var(--violet)}
+    .k6{background:var(--cyan)}
+    .k7{background:var(--slate)}
 
-.progress{background:#e2e8f0;height:8px;border-radius:5px;margin-top:4px;}
-.bar{height:100%;border-radius:5px;}
+    .main{
+      display:grid;
+      grid-template-columns:400px 1fr;
+      gap:20px;
+      align-items:start;
+    }
 
-.filter{display:flex;gap:10px;margin-bottom:10px;}
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:16px;
+      box-shadow:0 4px 14px rgba(15,23,42,.04);
+    }
 
-table{width:100%;border-collapse:collapse;}
-th,td{padding:8px;border-bottom:1px solid #e2e8f0;text-align:left;}
+    .card-title{
+      font-size:16px;
+      font-weight:700;
+      margin-bottom:8px;
+    }
 
-.footer{text-align:center;margin-top:10px;font-size:12px;color:#64748b;}
-</style>
+    label{
+      display:block;
+      margin-top:10px;
+      margin-bottom:4px;
+      font-size:12px;
+      color:var(--muted);
+      font-weight:600;
+    }
+
+    input, select{
+      width:100%;
+      padding:8px 10px;
+      border:1px solid #cbd5e1;
+      border-radius:8px;
+      font-size:14px;
+      background:#fff;
+    }
+
+    input:focus, select:focus{
+      outline:none;
+      border-color:var(--blue);
+      box-shadow:0 0 0 3px rgba(37,99,235,.12);
+    }
+
+    .section-head{
+      margin-top:14px;
+      margin-bottom:4px;
+      font-weight:700;
+    }
+
+    .phase{
+      font-size:11px;
+      color:var(--muted);
+      margin-top:8px;
+      margin-bottom:4px;
+    }
+
+    .progress{
+      background:#e2e8f0;
+      height:8px;
+      border-radius:999px;
+      overflow:hidden;
+      margin-top:6px;
+    }
+
+    .bar{
+      height:100%;
+      border-radius:999px;
+      transition:width .2s ease;
+    }
+
+    .actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+
+    button{
+      border:none;
+      border-radius:8px;
+      padding:8px 12px;
+      font-size:13px;
+      cursor:pointer;
+      font-weight:600;
+    }
+
+    .btn-blue{background:var(--blue);color:#fff;}
+    .btn-red{background:var(--red);color:#fff;}
+    .btn-light{background:#e2e8f0;color:#0f172a;}
+
+    .filter{
+      display:flex;
+      gap:10px;
+      margin-bottom:12px;
+    }
+
+    .filter input{flex:1;}
+    .filter select{width:180px;}
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:14px;
+    }
+
+    th,td{
+      text-align:left;
+      padding:10px 8px;
+      border-bottom:1px solid var(--border);
+      vertical-align:top;
+    }
+
+    th{
+      font-size:12px;
+      color:var(--muted);
+      font-weight:700;
+      letter-spacing:.2px;
+      text-transform:uppercase;
+    }
+
+    .status-completed{color:var(--green);font-weight:700;}
+    .status-progress{color:var(--amber);font-weight:700;}
+    .status-not-started{color:var(--red);font-weight:700;}
+
+    .inline-actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    .tag{
+      display:inline-block;
+      padding:2px 8px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:700;
+      margin-left:6px;
+      vertical-align:middle;
+    }
+
+    .tag-delay{
+      background:#fee2e2;
+      color:var(--red);
+    }
+
+    .alert{
+      margin-bottom:12px;
+      padding:10px 12px;
+      border-radius:8px;
+      font-size:13px;
+      font-weight:600;
+      display:none;
+    }
+
+    .alert.show{display:block;}
+    .alert.success{background:#ecfdf5;color:#166534;border:1px solid #bbf7d0;}
+    .alert.error{background:#fef2f2;color:#991b1b;border:1px solid #fecaca;}
+
+    .muted{
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .footer{
+      text-align:center;
+      padding:12px;
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .loading{
+      opacity:.65;
+      pointer-events:none;
+    }
+
+    @media (max-width: 1100px){
+      .kpi-row{grid-template-columns:repeat(3,1fr);}
+      .main{grid-template-columns:1fr;}
+    }
+
+    @media (max-width: 700px){
+      .kpi-row{grid-template-columns:repeat(2,1fr);}
+      .filter{flex-direction:column;}
+      .filter select{width:100%;}
+    }
+  </style>
 </head>
-
 <body>
-
-<div class="header">Automation Projects Tracker</div>
-
-<div class="container">
-
-<!-- KPI -->
-<div class="kpi-row">
-<div class="kpi k1"><h3 id="total">0</h3>Total</div>
-<div class="kpi k2"><h3 id="completed">0</h3>Completed</div>
-<div class="kpi k3"><h3 id="progressing">0</h3>In Progress</div>
-<div class="kpi k4"><h3 id="notstarted">0</h3>Not Started</div>
-<div class="kpi k5"><h3 id="thismonth">0</h3>This Month</div>
-<div class="kpi k6"><h3 id="nextmonth">0</h3>Next Month</div>
-<div class="kpi k7"><h3 id="prevmonth">0</h3>Previous Month</div>
-</div>
-
-<div class="main">
-
-<!-- LEFT -->
-<div class="card">
-
-<b>Add / Edit Project</b>
-
-<label>Name</label>
-<input id="name">
-
-<label>Go Live</label>
-<input type="date" id="golive">
-
-<label>Version</label>
-<input id="version">
-
-<b style="margin-top:10px;">⚙ Dev Environment</b>
-
-<div class="phase">Planning & Architecture (10%)</div>
-<select id="planning"></select>
-
-<div class="phase">Development & Integration (25%)</div>
-<select id="dev"></select>
-
-<div class="phase">Testing & QA (15%)</div>
-<select id="test"></select>
-
-<b style="margin-top:10px;">🚀 Prod Environment</b>
-
-<div class="phase">Development & Integration (20%)</div>
-<select id="pdev"></select>
-
-<div class="phase">Testing & QA (15%)</div>
-<select id="ptest"></select>
-
-<div class="phase">Configuration & Publish (15%)</div>
-<select id="publish"></select>
-
-<div style="margin-top:10px;">
-<b>Progress:</b> <span id="preview">0%</span>
-<div class="progress"><div id="bar" class="bar"></div></div>
-</div>
-
-<button class="btn-blue" onclick="saveProject()">Save Project</button>
-
-</div>
-
-<!-- RIGHT -->
-<div class="card">
-
-<div class="filter">
-<input id="search" placeholder="Search..." oninput="render()">
-<select id="filter" onchange="render()">
-<option value="all">All</option>
-<option value="completed">Completed</option>
-<option value="progress">In Progress</option>
-<option value="not">Not Started</option>
-</select>
-<button class="btn-blue" onclick="sort()">Sort</button>
-</div>
-
-<table>
-<thead>
-<tr>
-<th>Name</th><th>Status</th><th>Progress</th><th>Go Live</th><th>Version</th><th>Action</th>
-</tr>
-</thead>
-<tbody id="tbody"></tbody>
-</table>
-
-</div>
-
-</div>
-
-</div>
-
-<div class="footer">Floreal Bangladesh | Automation Systems</div>
-
-<script>
-
-// dropdown
-["planning","dev","test","pdev","ptest","publish"].forEach(id=>{
-let el=document.getElementById(id);
-["Not Started","In Progress","Completed"].forEach(v=>{
-let o=document.createElement("option");o.text=v;el.add(o);
-});
-});
-
-let projects = JSON.parse(localStorage.getItem("projects")||"[]");
-let editId=null;
-
-function save(){localStorage.setItem("projects",JSON.stringify(projects));}
-
-function val(x){if(x=="Completed")return 1;if(x=="In Progress")return .5;return 0;}
-
-function calc(){
-return Math.round(
-val(planning.value)*10+
-val(dev.value)*25+
-val(test.value)*15+
-val(pdev.value)*20+
-val(ptest.value)*15+
-val(publish.value)*15);
-}
-
-function preview(){
-let p=calc();
-document.getElementById("preview").innerText=p+"%";
-
-let color=p>=80?"#16a34a":p>=40?"#d97706":"#dc2626";
-let bar=document.getElementById("bar");
-bar.style.width=p+"%";
-bar.style.background=color;
-}
-
-["planning","dev","test","pdev","ptest","publish"].forEach(id=>{
-document.getElementById(id).onchange=preview;
-});
-
-function saveProject(){
-
-let name=document.getElementById("name").value.trim();
-if(!name){alert("Enter name");return;}
-
-let obj={
-id:editId||Date.now(),
-name:name,
-golive:golive.value,
-version:version.value,
-planning:planning.value,
-dev:dev.value,
-test:test.value,
-pdev:pdev.value,
-ptest:ptest.value,
-publish:publish.value
-};
-
-if(editId){
-projects=projects.map(x=>x.id==editId?obj:x);
-editId=null;
-}else{
-projects.push(obj);
-}
-
-save();render();
-}
-
-function editProject(id){
-let p=projects.find(x=>x.id==id);
-editId=id;
-
-document.getElementById("name").value=p.name;
-golive.value=p.golive;
-version.value=p.version;
-
-planning.value=p.planning;
-dev.value=p.dev;
-test.value=p.test;
-
-pdev.value=p.pdev;
-ptest.value=p.ptest;
-publish.value=p.publish;
-
-preview();
-}
-
-function del(id){
-if(!confirm("Delete?"))return;
-projects=projects.filter(x=>x.id!=id);
-save();render();
-}
-
-function sort(){
-projects.sort((a,b)=>new Date(a.golive)-new Date(b.golive));
-render();
-}
-
-function calcRow(p){
-return Math.round(
-val(p.planning)*10+val(p.dev)*25+val(p.test)*15+
-val(p.pdev)*20+val(p.ptest)*15+val(p.publish)*15);
-}
-
-function renderKPI(){
-let now=new Date(),tm=0,nm=0,pm=0,c=0,p=0,n=0;
-
-projects.forEach(x=>{
-let prog=calcRow(x);
-let g=new Date(x.golive);
-
-if(prog==100)c++; else if(prog==0)n++; else p++;
-
-if(g.getMonth()==now.getMonth())tm++;
-if(g.getMonth()==now.getMonth()+1)nm++;
-
-let m=now.getMonth()-1,y=now.getFullYear();
-if(m<0){m=11;y--;}
-if(g.getMonth()==m && g.getFullYear()==y)pm++;
-});
-
-total.innerText=projects.length;
-completed.innerText=c;
-progressing.innerText=p;
-notstarted.innerText=n;
-thismonth.innerText=tm;
-nextmonth.innerText=nm;
-prevmonth.innerText=pm;
-}
-
-function render(){
-
-renderKPI();
-
-let s=search.value.toLowerCase();
-let f=filter.value;
-
-let data=projects.filter(x=>{
-let prog=calcRow(x);
-
-if(f=="completed"&&prog!=100)return false;
-if(f=="progress"&&!(prog>0&&prog<100))return false;
-if(f=="not"&&prog!=0)return false;
-
-if(!x.name.toLowerCase().includes(s))return false;
-
-return true;
-});
-
-tbody.innerHTML=data.map(x=>{
-let prog=calcRow(x);
-let color=prog>=80?"#16a34a":prog>=40?"#d97706":"#dc2626";
-
-return `
-<tr>
-<td>${x.name}</td>
-<td>${prog==100?"Completed":prog==0?"Not Started":"In Progress"}</td>
-<td>${prog}%<div class="progress"><div class="bar" style="width:${prog}%;background:${color}"></div></div></td>
-<td>${x.golive||"-"}</td>
-<td>${x.version||"-"}</td>
-<td>
-<button class="btn-blue" onclick="editProject(${x.id})">Edit</button>
-<button class="btn-red" onclick="del(${x.id})">Delete</button>
-</td>
-</tr>`;
-}).join("");
-}
-
-preview();
-render();
-
-</script>
-
+  <div class="header">Automation Projects Tracker</div>
+
+  <div class="container">
+    <div id="globalAlert" class="alert"></div>
+
+    <div class="kpi-row">
+      <div class="kpi k1"><h3 id="total">0</h3><p>Total</p></div>
+      <div class="kpi k2"><h3 id="completed">0</h3><p>Completed</p></div>
+      <div class="kpi k3"><h3 id="progressing">0</h3><p>In Progress</p></div>
+      <div class="kpi k4"><h3 id="notstarted">0</h3><p>Not Started</p></div>
+      <div class="kpi k5"><h3 id="thismonth">0</h3><p>This Month</p></div>
+      <div class="kpi k6"><h3 id="nextmonth">0</h3><p>Next Month</p></div>
+      <div class="kpi k7"><h3 id="prevmonth">0</h3><p>Previous Month</p></div>
+    </div>
+
+    <div class="main">
+      <div class="card" id="formCard">
+        <div class="card-title">Add / Edit Project</div>
+
+        <label for="name">Name</label>
+        <input id="name" />
+
+        <label for="golive">Go Live</label>
+        <input type="date" id="golive" />
+
+        <label for="version">Version</label>
+        <input id="version" />
+
+        <div class="section-head">⚙ Dev Environment</div>
+
+        <div class="phase">Planning & Architecture (10%)</div>
+        <select id="planning"></select>
+
+        <div class="phase">Development & Integration (25%)</div>
+        <select id="dev"></select>
+
+        <div class="phase">Testing & QA (15%)</div>
+        <select id="test"></select>
+
+        <div class="section-head">🚀 Prod Environment</div>
+
+        <div class="phase">Development & Integration (20%)</div>
+        <select id="pdev"></select>
+
+        <div class="phase">Testing & QA (15%)</div>
+        <select id="ptest"></select>
+
+        <div class="phase">Configuration & Publish (15%)</div>
+        <select id="publish"></select>
+
+        <div style="margin-top:12px;">
+          <b>Progress:</b> <span id="preview">0%</span>
+          <div class="progress"><div id="bar" class="bar"></div></div>
+        </div>
+
+        <div class="actions">
+          <button class="btn-blue" onclick="saveProject()" id="saveBtn">Save Project</button>
+          <button class="btn-light" onclick="resetForm()" id="resetBtn">Reset</button>
+        </div>
+        <div class="muted" style="margin-top:8px;">Edit mode turns on when you click Edit from the list.</div>
+      </div>
+
+      <div class="card">
+        <div class="filter">
+          <input id="search" placeholder="Search..." oninput="render()" />
+          <select id="filter" onchange="render()">
+            <option value="all">All</option>
+            <option value="completed">Completed</option>
+            <option value="progress">In Progress</option>
+            <option value="not">Not Started</option>
+          </select>
+          <button class="btn-blue" onclick="sortProjects()">Sort</button>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Status</th>
+              <th>Progress</th>
+              <th>Go Live</th>
+              <th>Version</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">Developed By: IT Department | © 2026 Automation Systems | V1.0.0</div>
+
+  <script>
+    const SUPABASE_URL = "https://xwdhalspoctuwzfkllws.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_V6P3qz27t9x7TJbN64-d6w_zhvKMvPC";
+    const TABLE_NAME = "projects";
+
+    let projects = [];
+    let editId = null;
+    let sortAsc = true;
+    let isBusy = false;
+
+    ["planning","dev","test","pdev","ptest","publish"].forEach(id => {
+      const el = document.getElementById(id);
+      ["Not Started","In Progress","Completed"].forEach(v => {
+        const o = document.createElement("option");
+        o.value = v;
+        o.text = v;
+        el.add(o);
+      });
+    });
+
+    function setBusy(state){
+      isBusy = state;
+      document.getElementById("formCard").classList.toggle("loading", state);
+      document.getElementById("saveBtn").disabled = state;
+      document.getElementById("resetBtn").disabled = state;
+    }
+
+    function showAlert(message, type = "success"){
+      const el = document.getElementById("globalAlert");
+      el.className = `alert show ${type}`;
+      el.textContent = message;
+      clearTimeout(showAlert._timer);
+      showAlert._timer = setTimeout(() => {
+        el.className = "alert";
+        el.textContent = "";
+      }, 2500);
+    }
+
+    function val(x){
+      if(x === "Completed") return 1;
+      if(x === "In Progress") return 0.5;
+      return 0;
+    }
+
+    function calcCurrentForm(){
+      return Math.round(
+        val(planning.value) * 10 +
+        val(dev.value) * 25 +
+        val(test.value) * 15 +
+        val(pdev.value) * 20 +
+        val(ptest.value) * 15 +
+        val(publish.value) * 15
+      );
+    }
+
+    function calcRow(p){
+      return Math.round(
+        val(p.planning) * 10 +
+        val(p.dev) * 25 +
+        val(p.test) * 15 +
+        val(p.pdev) * 20 +
+        val(p.ptest) * 15 +
+        val(p.publish) * 15
+      );
+    }
+
+    function getStatus(prog){
+      if(prog === 100) return "Completed";
+      if(prog === 0) return "Not Started";
+      return "In Progress";
+    }
+
+    function getStatusClass(status){
+      if(status === "Completed") return "status-completed";
+      if(status === "In Progress") return "status-progress";
+      return "status-not-started";
+    }
+
+    function getProgressColor(prog){
+      if(prog >= 80) return "#16a34a";
+      if(prog >= 40) return "#d97706";
+      return "#dc2626";
+    }
+
+    function safeDate(value){
+      if(!value) return null;
+      const d = new Date(value);
+      return isNaN(d.getTime()) ? null : d;
+    }
+
+    function formatDate(value){
+      if(!value) return "-";
+      const d = safeDate(value);
+      if(!d) return "-";
+      return d.toISOString().slice(0,10);
+    }
+
+    function resetForm(){
+      editId = null;
+      document.getElementById("name").value = "";
+      document.getElementById("golive").value = "";
+      document.getElementById("version").value = "";
+      planning.value = "Not Started";
+      dev.value = "Not Started";
+      test.value = "Not Started";
+      pdev.value = "Not Started";
+      ptest.value = "Not Started";
+      publish.value = "Not Started";
+      preview();
+    }
+
+    function preview(){
+      const p = calcCurrentForm();
+      document.getElementById("preview").innerText = p + "%";
+      const bar = document.getElementById("bar");
+      bar.style.width = p + "%";
+      bar.style.background = getProgressColor(p);
+    }
+
+    ["planning","dev","test","pdev","ptest","publish"].forEach(id => {
+      document.getElementById(id).addEventListener("change", preview);
+    });
+
+    async function apiFetch(path = "", options = {}){
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE_NAME}${path}`, {
+        ...options,
+        headers: {
+          "apikey": SUPABASE_KEY,
+          "Authorization": "Bearer " + SUPABASE_KEY,
+          "Content-Type": "application/json",
+          "Prefer": "return=representation",
+          ...(options.headers || {})
+        }
+      });
+
+      if(!response.ok){
+        const text = await response.text();
+        throw new Error(text || `HTTP ${response.status}`);
+      }
+
+      const contentType = response.headers.get("content-type") || "";
+      if(contentType.includes("application/json")){
+        return response.json();
+      }
+      return null;
+    }
+
+    async function loadProjects(){
+      try{
+        projects = await apiFetch("?select=*&order=created_at.asc");
+        render();
+      }catch(error){
+        console.error(error);
+        showAlert("Could not load data from Supabase.", "error");
+      }
+    }
+
+    async function saveProject(){
+      const projectName = document.getElementById("name").value.trim();
+      if(!projectName){
+        showAlert("Enter name.", "error");
+        return;
+      }
+
+      const obj = {
+        name: projectName,
+        golive: golive.value || null,
+        version: version.value || null,
+        planning: planning.value,
+        dev: dev.value,
+        test: test.value,
+        pdev: pdev.value,
+        ptest: ptest.value,
+        publish: publish.value
+      };
+
+      try{
+        setBusy(true);
+
+        if(editId){
+          await apiFetch(`?id=eq.${editId}`, {
+            method: "PATCH",
+            body: JSON.stringify(obj)
+          });
+          showAlert("Updated in cloud ✅");
+        }else{
+          await apiFetch("", {
+            method: "POST",
+            body: JSON.stringify(obj)
+          });
+          showAlert("Saved to cloud ✅");
+        }
+
+        resetForm();
+        await loadProjects();
+      }catch(error){
+        console.error(error);
+        showAlert("Could not save to Supabase.", "error");
+      }finally{
+        setBusy(false);
+      }
+    }
+
+    function editProject(id){
+      const p = projects.find(x => x.id === id);
+      if(!p) return;
+
+      editId = id;
+      document.getElementById("name").value = p.name || "";
+      golive.value = p.golive || "";
+      version.value = p.version || "";
+      planning.value = p.planning || "Not Started";
+      dev.value = p.dev || "Not Started";
+      test.value = p.test || "Not Started";
+      pdev.value = p.pdev || "Not Started";
+      ptest.value = p.ptest || "Not Started";
+      publish.value = p.publish || "Not Started";
+      preview();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    async function del(id){
+      if(!confirm("Delete?")) return;
+
+      try{
+        await apiFetch(`?id=eq.${id}`, {
+          method: "DELETE",
+          headers: {
+            "Prefer": "return=minimal"
+          }
+        });
+
+        if(editId === id){
+          resetForm();
+        }
+
+        showAlert("Deleted ✅");
+        await loadProjects();
+      }catch(error){
+        console.error(error);
+        showAlert("Could not delete from Supabase.", "error");
+      }
+    }
+
+    function sortProjects(){
+      projects.sort((a,b)=>{
+        const da = safeDate(a.golive);
+        const db = safeDate(b.golive);
+
+        if(!da && !db) return 0;
+        if(!da) return 1;
+        if(!db) return -1;
+        return sortAsc ? da - db : db - da;
+      });
+
+      sortAsc = !sortAsc;
+      render();
+    }
+
+    function renderKPI(){
+      const now = new Date();
+      let tm = 0, nm = 0, pm = 0, c = 0, p = 0, n = 0;
+
+      projects.forEach(x => {
+        const prog = calcRow(x);
+        const g = safeDate(x.golive);
+
+        if(prog === 100) c++;
+        else if(prog === 0) n++;
+        else p++;
+
+        if(g){
+          if(g.getMonth() === now.getMonth() && g.getFullYear() === now.getFullYear()) tm++;
+
+          let nextMonth = now.getMonth() + 1;
+          let nextYear = now.getFullYear();
+          if(nextMonth > 11){
+            nextMonth = 0;
+            nextYear++;
+          }
+          if(g.getMonth() === nextMonth && g.getFullYear() === nextYear) nm++;
+
+          let prevMonth = now.getMonth() - 1;
+          let prevYear = now.getFullYear();
+          if(prevMonth < 0){
+            prevMonth = 11;
+            prevYear--;
+          }
+          if(g.getMonth() === prevMonth && g.getFullYear() === prevYear) pm++;
+        }
+      });
+
+      total.innerText = projects.length;
+      completed.innerText = c;
+      progressing.innerText = p;
+      notstarted.innerText = n;
+      thismonth.innerText = tm;
+      nextmonth.innerText = nm;
+      prevmonth.innerText = pm;
+    }
+
+    function render(){
+      renderKPI();
+
+      const searchText = search.value.toLowerCase().trim();
+      const filterValue = filter.value;
+
+      const data = projects.filter(x => {
+        const prog = calcRow(x);
+
+        if(filterValue === "completed" && prog !== 100) return false;
+        if(filterValue === "progress" && !(prog > 0 && prog < 100)) return false;
+        if(filterValue === "not" && prog !== 0) return false;
+        if(searchText && !(x.name || "").toLowerCase().includes(searchText)) return false;
+
+        return true;
+      });
+
+      tbody.innerHTML = data.map(x => {
+        const prog = calcRow(x);
+        const color = getProgressColor(prog);
+        const status = getStatus(prog);
+
+        const delayed = x.golive && safeDate(x.golive) && safeDate(x.golive) < new Date() && prog < 100;
+
+        return `
+          <tr>
+            <td>
+              ${x.name || "-"}
+              ${delayed ? '<span class="tag tag-delay">Delayed</span>' : ""}
+            </td>
+            <td class="${getStatusClass(status)}">${status}</td>
+            <td>
+              ${prog}%
+              <div class="progress">
+                <div class="bar" style="width:${prog}%;background:${color}"></div>
+              </div>
+            </td>
+            <td>${formatDate(x.golive)}</td>
+            <td>${x.version || "-"}</td>
+            <td>
+              <div class="inline-actions">
+                <button class="btn-blue" onclick="editProject('${x.id}')">Edit</button>
+                <button class="btn-red" onclick="del('${x.id}')">Delete</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    preview();
+    loadProjects();
+  </script>
 </body>
 </html>
