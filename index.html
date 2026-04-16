@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Automation Projects Tracker</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
     :root{
       --bg:#f3f6fb;
@@ -363,6 +366,8 @@
     const SUPABASE_URL = "https://xwdhalspoctuwzfkllws.supabase.co";
     const SUPABASE_KEY = "sb_publishable_V6P3qz27t9x7TJbN64-d6w_zhvKMvPC";
     const TABLE_NAME = "projects";
+
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     let projects = [];
     let editId = null;
