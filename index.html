@@ -511,15 +511,26 @@
       return null;
     }
 
-    async function loadProjects(){
-      try{
-        projects = await apiFetch("?select=*&order=created_at.asc");
-        render();
-      }catch(error){
-        console.error(error);
-        showAlert("Could not load data from Supabase.", "error");
-      }
+     async function loadProjects(){
+          try{
+        const { data, error } = await supabase
+       .from(TABLE_NAME)
+       .select('*')
+       .order('created_at', { ascending: true });
+
+     if(error){
+       console.error(error);
+      return;
     }
+
+    projects = data || [];
+    render();
+
+  }catch(error){
+    console.error(error);
+    showAlert("Could not load data from Supabase.", "error");
+  }
+}
 
     async function saveProject(){
       const projectName = document.getElementById("name").value.trim();
