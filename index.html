@@ -7,6 +7,10 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+
+<button onclick="login('editor@local.com','123456')">Login Editor</button>
+<button onclick="login('viewer@local.com','123456')">Login Viewer</button>
+
   <style>
     :root{
       --bg:#f3f6fb;
@@ -401,6 +405,25 @@
         el.textContent = "";
       }, 2500);
     }
+
+
+
+async function login(email, password){
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if(error){
+    alert("Login failed");
+    console.log(error);
+    return;
+  }
+
+  alert("Login success");
+
+  loadProjects(); // VERY IMPORTANT
+}
 
     function val(x){
       if(x === "Completed") return 1;
